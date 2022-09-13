@@ -65,7 +65,7 @@ export default {
         this.notes = res.data;
         console.log('222');
         this.curBook = this.notebooks.find(notebook => notebook.id === notebookId)
-        // this.$emit('update:notes',this.notes)
+        this.$emit('update:notes',this.notes)
       })
     }
   }
