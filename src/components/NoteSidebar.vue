@@ -34,6 +34,7 @@
 <script>
 import Notebooks from "../apis/notebooks";
 import Notes from "../apis/notes";
+import Bus from "../helpers/bus";
 
 export default {
   created() {
@@ -42,7 +43,8 @@ export default {
       this.curBook = this.notebooks.find(notebook => notebook.id === this.$route.query.notebookId) || this.notebooks[0] || {}
       return Notes.getAll({notebookId: this.curBook.id}).then(res => {
         this.notes = res.data
-        this.$emit('update:notes',this.notes)
+        this.$emit('update:notes', this.notes)
+        Bus.$emit('update:notes',this.notes)
       })
     })
   },
@@ -55,8 +57,22 @@ export default {
   },
 
   methods: {
-    addNote() {
-    },
+    addNote(notebookId) {
+      let title = ''
+      this.$prompt('输入新笔记标题', '修改笔记标题', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^.{1,30}$/,
+        inputErrorMessage: '标题不能为空，且不超过30个字符'
+      }).then(({value}) => {
+        return Notes.addNote({notebookId:this.curBook.id})
+      }).then((res) =>{
+        // res.data.title = value
+        this.notes.unshift(res.data)
+        console.log(this.curBook);
+        this.$message.success(data.msg)
+      })
+      },
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
         return this.$router.push({path: '/trash'})
@@ -66,6 +82,7 @@ export default {
         console.log('222');
         this.curBook = this.notebooks.find(notebook => notebook.id === notebookId)
         this.$emit('update:notes',this.notes)
+        Bus.$on('update:notes',this.notes)
       })
     }
   }

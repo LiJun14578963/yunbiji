@@ -26,12 +26,11 @@
 import Auth from "../apis/auth";
 import Notebooks from "../apis/notebooks";
 import {friendlyDate} from "../helpers/util";
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   data() {
-    return {
-      notebooks: [],
-    }
+    return {}
   },
   created() {
     Auth.getInfo().then(res => {
@@ -39,11 +38,17 @@ export default {
         this.$router.push({path: '/login'})
       }
     })
-
-    Notebooks.getAll().then(res => {
-      this.notebooks = res.data
-    })
+    // Notebooks.getAll().then(res => {
+    //   this.notebooks = res.data
+    // })
+    console.log('777');
+    this.$store.dispatch('getNotebooks')
+    console.log('888');
   },
+  computed: {
+    ...mapGetters(['notebooks'])
+  },
+
   methods: {
     onCreate() {
       this.$prompt('输入新笔记本标题', '创建笔记本', {
