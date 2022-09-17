@@ -35,13 +35,10 @@
 <script>
 import Auth from "../apis/auth";
 import Bus from "../helpers/bus";
-// Auth.getInfo().then(data =>{
-//   console.log(data);
-// })
+import { mapMutations, mapActions} from "vuex";
+
 
 export default {
-  name: 'Login',
-
   data() {
     return {
       isShowRegister: false,
@@ -61,6 +58,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      loginUser: 'login',
+      registerUser: 'register'
+    }),
     showLogin() {
       this.isShowLogin = true
       this.isShowRegister = false
@@ -80,10 +81,9 @@ export default {
         this.register.notice = '密码长度为6~16个字符'
         return
       }
-      console.log(this.register.username, this.register.password);
       this.register.isError = false
       this.register.notice = ''
-      Auth.register({username: this.register.username, password: this.register.password})
+      this.registerUser({username: this.register.username, password: this.register.password})
         .then(data => {
           this.login.isError = false
           this.login.notice = ''
@@ -104,9 +104,8 @@ export default {
         this.login.notice = '密码长度为6~16个字符'
         return
       }
-      console.log(this.login.username, this.login.password);
 
-      Auth.login({username: this.login.username, password: this.login.password})
+      this.loginUser({username: this.login.username, password: this.login.password})
         .then(data => {
           this.login.isError = false
           this.login.notice = ''

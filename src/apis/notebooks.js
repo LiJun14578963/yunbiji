@@ -10,12 +10,11 @@ const URL = {
 
 export default {
   getAll() {
-    return new Promise((resolve, reject) =>{
-      request(URL.GET).then(res =>{
-        console.log(res.data);
+    return new Promise((resolve, reject) => {
+      request(URL.GET).then(res => {
         res.data.sort((notebook1, notebook2) => notebook1.createdAt < notebook2.createdAt ? 1 : -1)
         res.data.forEach(notebook => {
-          notebook.frienlyCreatedAt = friendlyDate(notebook.createdAt)
+          notebook.createdAtFriendly = friendlyDate(notebook.createdAt)
         })
         resolve(res)
       }).catch(err => {
@@ -25,12 +24,24 @@ export default {
   },
 
   updateNotebook(notebookId, {title = ''} = {title: ''}) {
-    return request(URL.UPDATE.replace(':id',notebookId),'PATCH',{title})
+    return request(URL.UPDATE.replace(':id', notebookId), 'PATCH', {title})
   },
   deleteNotebook(notebookId) {
-    return request(URL.DELETE.replace(':id',notebookId),'DELETE')
+    return request(URL.DELETE.replace(':id', notebookId), 'DELETE')
   },
-  addNoteBook({title = ''} = {title:''}) {
-    return request(URL.ADD,'POST',{title})
+  addNotebook({ title = ''} = { title: ''}) {
+    return new Promise((resolve, reject) => {
+      request(URL.ADD, 'POST', { title })
+        .then(res => {
+          res.data.createdAtFriendly = friendlyDate(res.data.createdAt)
+          res.data.updatedAtFriendly = friendlyDate(res.data.updatedAt)
+          resolve(res)
+        }).catch(err => {
+        reject(err)
+      })
+    })
   }
+  // addNoteBook({title = ''} = {title:''}) {
+  //   return request(URL.ADD,'POST',{title})
+  // }
 }

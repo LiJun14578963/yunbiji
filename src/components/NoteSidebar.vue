@@ -1,6 +1,6 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note" @click="addNote">添加笔记</span>
+    <span class="btn add-note" @click="onAddNote">添加笔记</span>
     <el-dropdown
       class="notebook-title"
       @command="handleCommand"
@@ -35,55 +35,88 @@
 import Notebooks from "../apis/notebooks";
 import Notes from "../apis/notes";
 import Bus from "../helpers/bus";
+import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 
 export default {
   created() {
-    Notebooks.getAll().then(res => {
-      this.notebooks = res.data
-      this.curBook = this.notebooks.find(notebook => notebook.id === this.$route.query.notebookId) || this.notebooks[0] || {}
-      return Notes.getAll({notebookId: this.curBook.id}).then(res => {
-        this.notes = res.data
-        this.$emit('update:notes', this.notes)
-        Bus.$emit('update:notes',this.notes)
-      })
+    this.getNotebooks()
+      .then(() =>{
+      this.setCurBook({curBookId: this.$route.query.notebookId})
+      return this.getNotes({notebookId: this.curBook.id})
     })
+      .then(() => {
+        this.setCurNote({ curNoteId: this.$route.query.noteId })
+      })
+    // Notebooks.getAll().then(res => {
+    //   this.notebooks = res.data
+    //   this.curBook = this.notebooks.find(notebook => notebook.id === this.$route.query.notebookId) || this.notebooks[0] || {}
+    //   return Notes.getAll({notebookId: this.curBook.id}).then(res => {
+    //     this.notes = res.data
+    //     this.$emit('update:notes', this.notes)
+    //     Bus.$emit('update:notes', this.notes)
+    //   })
+    // })
   },
   data() {
-    return {
-      notebooks: [],
-      notes: [],
-      curBook: {},
-    }
+    return {}
   },
+computed:{
+  ...mapGetters([
+    'notebooks',
+    'notes',
+    'curBook'
+  ])
+},
 
   methods: {
-    addNote(notebookId) {
-      let title = ''
+    ...mapMutations([
+      'setCurNote',
+      'setCurBook'
+    ]),
+    ...mapActions([
+      'getNotebooks','getNotes'
+    ]),
+
+    onAddNote(notebookId) {
       this.$prompt('输入新笔记标题', '修改笔记标题', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^.{1,30}$/,
-        inputErrorMessage: '标题不能为空，且不超过30个字符'
-      }).then(({value}) => {
-        return Notes.addNote({notebookId:this.curBook.id})
-      }).then((res) =>{
-        // res.data.title = value
-        this.notes.unshift(res.data)
-        console.log(this.curBook);
-        this.$message.success(data.msg)
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputPattern: /^.{1,30}$/,
+            inputErrorMessage: '标题不能为空，且不超过30个字符'
+          }).then(({value}) => {
+        this.$store.dispatch('addNote', {notebookId: this.curBook.id, title: value, content: ''})
       })
-      },
+    },
+      // this.$prompt('输入新笔记标题', '修改笔记标题', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   inputPattern: /^.{1,30}$/,
+      //   inputErrorMessage: '标题不能为空，且不超过30个字符'
+      // }).then(({value}) => {
+
+      // })
+      // },
+        // return Notes.addNote({notebookId: this.curBook.id})
+      // }).then((res) => {
+      //   // res.data.title = value
+      //   this.notes.unshift(res.data)
+      //   console.log(this.curBook);
+      //   this.$message.success(data.msg)
+      // })
+
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
         return this.$router.push({path: '/trash'})
       }
-      Notes.getAll({notebookId}).then(res => {
-        this.notes = res.data;
-        console.log('222');
-        this.curBook = this.notebooks.find(notebook => notebook.id === notebookId)
-        this.$emit('update:notes',this.notes)
-        Bus.$on('update:notes',this.notes)
-      })
+      this.$store.commit('setCurBook',{curBookId:notebookId})
+      this.getNotes({notebookId})
+      // Notes.getAll({notebookId}).then(res => {
+      //   this.notes = res.data;
+      //   console.log('222');
+      //   this.curBook = this.notebooks.find(notebook => notebook.id === notebookId)
+      //   this.$emit('update:notes', this.notes)
+      //   Bus.$on('update:notes', this.notes)
+      // })
     }
   }
 }

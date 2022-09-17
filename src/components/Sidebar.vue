@@ -22,7 +22,6 @@ export default {
     onLogout() {
     },
     logout() {
-      console.log(22);
       Auth.logout().then(
         data => {
           this.$router.push({path:'login'})//跳转页面
@@ -30,7 +29,6 @@ export default {
       )
     }
   }
-
 }
 
 

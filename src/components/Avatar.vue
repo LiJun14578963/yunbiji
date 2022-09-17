@@ -1,31 +1,42 @@
 <template>
-  <span :title="username">{{slug}}</span>
+  <span >{{slug}}</span>
 </template>
 
 <script>
 import Auth from '../apis/auth'
-import Bus from "../helpers/bus";
-  export default {
-    data(){
-      return {
-        username: '未登录',
-      }
-    },
-    computed:{
-      slug(){
-        return this.username.charAt(0)
-      }
-    },
-    created() {
-      Bus.$on('userInfo',user =>{
-        this.username = user.username
-      })
-      console.log(this.username);
-      Auth.getInfo().then(res =>{
+import { mapGetters, mapActions} from "vuex";
 
-        this.username = res.data.username
-      })
-    }
+export default {
+    data(){
+      return {}
+    },
+
+  created({payload}) {
+    this.setUser({payload:''})
+    // Bus.$on('userInfo',user =>{
+    //   this.username = user.username
+    // })
+    // Auth.getInfo().then(res =>{
+    //   this.username = res.data.username
+    // })
+  },
+
+    computed:{
+      ...mapGetters([
+        "username",
+        "slug"
+      ])
+      // slug(){
+      //   return this.username.charAt(0)
+      // }
+    },
+  methods:{
+    ...mapActions({
+      setUser: 'checkLogin',
+    }),
+  },
+
+
   }
 </script>
 
