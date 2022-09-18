@@ -6,27 +6,24 @@
       <router-link to="/notebooks" title="笔记本"><i class="iconfont icon-notebook"></i></router-link>
       <router-link to="/trash" title="回收站"><i class="iconfont icon-trash"></i></router-link>
     </div>
-    <div class="logout" @click="onLogout">
-      <i class="iconfont icon-logout" @click="logout"></i>
+    <div class="logout" >
+      <i class="iconfont icon-logout" @click="onLogout"></i>
     </div>
   </div>
 </template>
 
 <script>
-import Avatar from "./Avatar";
-import Auth from "../apis/auth";
-
+import { mapActions} from "vuex";
+import avatar from "./Avatar";
 export default {
-  components: {Avatar},
+  components: {
+    avatar
+  },
+
   methods: {
+    ...mapActions(['logout']),
     onLogout() {
-    },
-    logout() {
-      Auth.logout().then(
-        data => {
-          this.$router.push('/login')//跳转页面
-        }
-      )
+      this.logout({path: '/login'})
     }
   }
 }

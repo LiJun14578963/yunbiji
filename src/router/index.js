@@ -11,15 +11,12 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: Login
+      alias: '/notebooks',
+      component: Notebooks
     },
     {
       path: '/login',
       component: Login
-    },
-    {
-      path: '/notebooks',
-      component: Notebooks
     },
     {
       path: '/note',

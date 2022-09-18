@@ -33,9 +33,8 @@
 </template>
 
 <script>
-import Auth from "../apis/auth";
 import Bus from "../helpers/bus";
-import { mapMutations, mapActions} from "vuex";
+import { mapActions} from "vuex";
 
 
 export default {

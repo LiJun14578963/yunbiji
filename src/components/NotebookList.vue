@@ -23,10 +23,7 @@
 </template>
 
 <script>
-import Auth from "../apis/auth";
-import Notebooks from "../apis/notebooks";
-import {friendlyDate} from "../helpers/util";
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   data() {

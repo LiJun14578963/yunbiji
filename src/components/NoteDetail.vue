@@ -32,8 +32,6 @@ import _ from "lodash";
 import MarkdownIt from 'markdown-it'
 import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 
-// let md = new MarkdownIt()
-
 export default {
   components: {NoteSidebar},
   data() {
