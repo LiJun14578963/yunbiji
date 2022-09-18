@@ -46,6 +46,13 @@ export default {
     })
       .then(() => {
         this.setCurNote({ curNoteId: this.$route.query.noteId })
+        this.$router.replace({
+          path:'/note',
+          query: {
+            noteId: this.curNote.id,
+            notebookId: this.curBook.id
+          }
+        })
       })
     // Notebooks.getAll().then(res => {
     //   this.notebooks = res.data
@@ -64,7 +71,8 @@ computed:{
   ...mapGetters([
     'notebooks',
     'notes',
-    'curBook'
+    'curBook',
+    'curNote'
   ])
 },
 
@@ -110,6 +118,16 @@ computed:{
       }
       this.$store.commit('setCurBook',{curBookId:notebookId})
       this.getNotes({notebookId})
+        .then(() => {
+          this.setCurNote()
+          this.$router.replace({
+            path:'/note',
+            query: {
+              noteId: this.curNote.id,
+              notebookId: this.curBook.id
+            }
+          })
+        })
       // Notes.getAll({notebookId}).then(res => {
       //   this.notes = res.data;
       //   console.log('222');

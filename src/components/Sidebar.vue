@@ -24,7 +24,7 @@ export default {
     logout() {
       Auth.logout().then(
         data => {
-          this.$router.push({path:'login'})//跳转页面
+          this.$router.push('/login')//跳转页面
         }
       )
     }

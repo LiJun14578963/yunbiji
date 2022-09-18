@@ -32,7 +32,8 @@ const actions = {
       })
   },
 
-  checkLogin({commit},payload) {//检查用户是否登陆
+  checkLogin({commit, state},payload) {//检查用户是否登陆
+    if(state.user !== null) return Promise.resolve()//减少获取数据次数
     return Auth.getInfo()
       .then(res => {
         if(!res.isLogin) {

@@ -11,8 +11,8 @@ export default {
       return {}
     },
 
-  created({payload}) {
-    this.setUser({payload:''})
+  created() {
+    this.setUser()
     // Bus.$on('userInfo',user =>{
     //   this.username = user.username
     // })

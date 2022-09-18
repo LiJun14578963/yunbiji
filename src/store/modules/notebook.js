@@ -38,7 +38,8 @@ const mutations = {
 }
 
 const actions = {
-  getNotebooks({commit}) {
+  getNotebooks({commit, state}) {
+    if(state.notebooks !== null) return Promise.resolve()//减少缓存次数，不用每次都获取数据
    return Notebook.getAll().then(res => {
       commit('setNotebooks', {notebooks: res.data})
     })
